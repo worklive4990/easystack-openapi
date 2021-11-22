@@ -46,8 +46,6 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-        '404':
-          description: Not Found
     post:
       tags:
         - "Domains"
@@ -61,7 +59,7 @@ paths:
             schema:
               $ref: "#/components/schemas/DomainPostReq"
       responses:
-        '200':
+        '201':
           description: OK
           content:
             application/json:
@@ -84,7 +82,7 @@ paths:
       tags:
         - "Domains"
       summary: "Show domain details"
-      description: "查询指定domain"
+      description: "查询指定部门"
       parameters:
         - name: domain_id
           in: path
@@ -114,7 +112,7 @@ paths:
       tags:
         - "Domains"
       summary: "Update domain"
-      description: "更新指定domain"
+      description: "更新指定部门"
       parameters:
         - name: domain_id
           in: path
@@ -153,7 +151,7 @@ paths:
       tags:
         - "Domains"
       summary: "Delete domain"
-      description: "删除指定domain"
+      description: "删除指定部门"
       parameters:
         - name: domain_id
           in: path
@@ -162,7 +160,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: No Content
         '400':
           description: Bad Request
@@ -220,13 +218,43 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+    post:
+      tags:
+        - "Projects"
+      summary: Create project
+      description: "创建项目"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectPostReq"
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                      $ref: "#/components/schemas/Project"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
 
   /v1/projects/{project_id}:
     get:
       tags:
         - "Projects"
       summary: "Show project details"
-      description: "查询指定project"
+      description: "查询指定项目"
       parameters:
         - name: project_id
           in: path
@@ -252,7 +280,735 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+    patch:
+      tags:
+        - "Projects"
+      summary: "Update project"
+      description: "更新指定项目"
+      parameters:
+        - name: project_id
+          in: path
+          description: 项目ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectPatchReq"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                      $ref: "#/components/schemas/Project"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+    delete:
+      tags:
+        - "Projects"
+      summary: "Delete project"
+      description: "删除指定项目"
+      parameters:
+        - name: project_id
+          in: path
+          description: 项目ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
 
+  /v1/groups:
+    get:
+      tags:
+        - "Groups"
+      summary: "List user groups"
+      description: "查询用户组列表"
+      parameters:
+        - name: name
+          in: query
+          description: 用户组名称
+          schema:
+            type: string
+        - name: domain_id
+          in: query
+          description: 根据部门的ID过滤查询
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Group"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+        - "Groups"
+      summary: Create group
+      description: "创建用户组"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupPostPatchReq"
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  group:
+                      $ref: "#/components/schemas/Group"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+
+  /v1/groups/{group_id}:
+    get:
+      tags:
+        - "Groups"
+      summary: "Show group details"
+      description: "查询指定用户组"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  group:
+                      $ref: "#/components/schemas/Group"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    patch:
+      tags:
+        - "Groups"
+      summary: "Update group"
+      description: "更新指定用户组"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupPostPatchReq"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  group:
+                      $ref: "#/components/schemas/Group"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+    delete:
+      tags:
+        - "Groups"
+      summary: "Delete group"
+      description: "删除指定用户组"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  /v1/groups/{group_id}/users:
+    get:
+      tags:
+        - "Groups"
+      summary: "List users in group"
+      description: "查询指定用户组中用户列表"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                      $ref: "#/components/schemas/User"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  /v1/groups/{group_id}/users/{user_id}:
+    put:
+      tags:
+        - "Groups"
+      summary: "Add user to group"
+      description: "增加指定用户到制定用户组"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    head:
+      tags:
+        - "Groups"
+      summary: "Check whether user belongs to group"
+      description: "校验指定用户是否属于指定用户组"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - "Groups"
+      summary: "Remove user from group"
+      description: "将指定用户从指定用户组移除"
+      parameters:
+        - name: group_id
+          in: path
+          description: 用户组ID
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  /v1/users:
+    get:
+      tags:
+        - "Users"
+      summary: "List users"
+      description: "查询用户列表"
+      parameters:
+        - name: name
+          in: query
+          description: 用户名称
+          schema:
+            type: string
+        - name: domain_id
+          in: query
+          description: 根据部门ID查询
+          schema:
+            type: string
+        - name: enabled
+          in: query
+          description: 根据用户的激活状态查询
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+        - "Users"
+      summary: Create user
+      description: "创建用户"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPostReq"
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                      $ref: "#/components/schemas/User"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+
+  /v1/users/{user_id}:
+    get:
+      tags:
+        - "Users"
+      summary: "Show user details"
+      description: "查询指定用户"
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                      $ref: "#/components/schemas/User"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    patch:
+      tags:
+        - "Users"
+      summary: "Update user"
+      description: "更新指定用户"
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPatchReq"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                      $ref: "#/components/schemas/User"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+    delete:
+      tags:
+        - "Users"
+      summary: "Delete user"
+      description: "删除指定用户"
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  /v1/users/{user_id}/projects:
+    get:
+      tags:
+        - "Users"
+      summary: "List projects to which the user has authorization to access"
+      description: "查询指定用户拥有权限的项目列表"
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                      $ref: "#/components/schemas/Project"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  /v1/users/{user_id}/password:
+    post:
+      tags:
+        - "Users"
+      summary: "Change password for user"
+      description: "修改用户密码"
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPWPostReq"
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+
+  /v1/roles:
+    get:
+      tags:
+        - "Roles"
+      summary: "List roles"
+      description: "查询角色列表"
+      parameters:
+        - name: name
+          in: query
+          description: 角色名称
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RoleListRes"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+        - "Roles"
+      summary: Create role
+      description: "创建角色"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RolePostPatchReq"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  role:
+                      $ref: "#/components/schemas/Role"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '409':
+          description: Conflict
+
+  /v1/roles/{role_id}:
+    get:
+      tags:
+        - "Roles"
+      summary: "Show role details"
+      description: "查询指定角色"
+      parameters:
+        - name: role_id
+          in: path
+          description: 角色ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  role:
+                      $ref: "#/components/schemas/Role"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    patch:
+      tags:
+        - "Roles"
+      summary: "Update role"
+      description: "更新指定角色"
+      parameters:
+        - name: role_id
+          in: path
+          description: 角色ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RolePostPatchReq"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  role:
+                      $ref: "#/components/schemas/Role"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+    delete:
+      tags:
+        - "Roles"
+      summary: "Delete role"
+      description: "删除指定角色"
+      parameters:
+        - name: role_id
+          in: path
+          description: 角色ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
 
 components:
   schemas:
@@ -286,7 +1042,7 @@ components:
           type: boolean
         parent_id:
           type: string
-    UserGroup:
+    Group:
       type: object
       properties:
         name:
@@ -299,8 +1055,6 @@ components:
           type: string
         domain_name:
           type: string
-        enabled:
-          type: boolean
     User:
       type: object
       properties:
@@ -320,21 +1074,28 @@ components:
           type: boolean
         email:
           type: string
+        password_expires_at:
+          type: string
+        created_at:
+          type: string
+        domain_role_id:
+          type: string
     Role:
       type: object
       properties:
         type:
           type: string
+          enum:
+            - system
+            - custom
         name:
           type: string
         id:
           type: string
         description:
           type: string
-        assign_users:
-          type: number
-        assign_usergroups:
-          type: number
+        created_at:
+          type: string
     DomainPostReq:
       type: object
       required:
@@ -365,3 +1126,152 @@ components:
               type: string
             enabled:
               type: boolean
+    ProjectPostReq:
+      type: object
+      required:
+        - "project"
+      properties:
+        project:
+          type: object
+          required:
+            - "name"
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            enabled:
+              type: boolean
+            parent_id:
+              type: string
+            domain_id:
+              type: string
+    ProjectPatchReq:
+      type: object
+      required:
+        - "project"
+      properties:
+        project:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            enabled:
+              type: boolean
+            domain_id:
+              type: string
+    GroupPostPatchReq:
+      type: object
+      required:
+        - "group"
+      properties:
+        group:
+          type: object
+          required:
+            - "name"
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            domain_id:
+              type: string
+    UserPostReq:
+      type: object
+      required:
+        - "user"
+      properties:
+        user:
+          type: object
+          required:
+            - "name"
+            - "domain_id"
+            - "password"
+            - "email"
+            - "domain_role_id"
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            enabled:
+              type: boolean
+            domain_id:
+              type: string
+            password:
+              type: string
+            email:
+              type: string
+            domain_role_id:
+              type: string
+    UserPatchReq:
+      type: object
+      required:
+        - "user"
+      properties:
+        user:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            enabled:
+              type: boolean
+            password:
+              type: string
+    UserPWPostReq:
+      type: object
+      required:
+        - "user"
+      properties:
+        user:
+          type: object
+          required:
+            - "original_password"
+            - "password"
+          properties:
+            original_password:
+              type: string
+            password:
+              type: string
+    RolePostPatchReq:
+      type: object
+      required:
+        - "role"
+      properties:
+        role:
+          type: object
+          required:
+            - "name"
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+    RoleListRes:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - system
+            - custom
+        name:
+          type: string
+        id:
+          type: string
+        description:
+          type: string
+        assign_users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        assign_groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/Group"
+        created_at:
+          type: string
