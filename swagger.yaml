@@ -1010,6 +1010,147 @@ paths:
         '404':
           description: Not Found
 
+  /v1/securities/password_strength:
+    get:
+      tags:
+        - "Securities"
+      summary: "Show password requirement details"
+      description: "查询密码强度要求"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  password_strength:
+                    $ref: "#/components/schemas/PasswordStrength"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    patch:
+      tags:
+        - "Securities"
+      summary: "Update password requirement"
+      description: "更新密码强度要求"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password_strength:
+                  $ref: "#/components/schemas/PasswordStrength"
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/securities/single_sign_on:
+    get:
+      tags:
+        - "Securities"
+      summary: "Show share account information that login forbidden"
+      description: "查询禁止共享账号登陆信息"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  single_sign_on:
+                    $ref: "#/components/schemas/SingleSignOn"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    patch:
+      tags:
+        - "Securities"
+      summary: "Update share account information that login forbidden"
+      description: "更新禁止共享账号登陆信息"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                single_sign_on:
+                  $ref: "#/components/schemas/SingleSignOn"
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /v1/securities/account_lockout:
+    get:
+      tags:
+        - "Securities"
+      summary: "Show account lockout details"
+      description: "查询账号锁定策略"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_lockout:
+                    $ref: "#/components/schemas/AccountLockout"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    patch:
+      tags:
+        - "Securities"
+      summary: "Update account lockout"
+      description: "更新账号锁定策略"
+      requestBody:
+        description: 请求数据
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_lockout:
+                  $ref: "#/components/schemas/AccountLockout"
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
 components:
   schemas:
     Domain:
@@ -1275,3 +1416,31 @@ components:
             $ref: "#/components/schemas/Group"
         created_at:
           type: string
+    PasswordStrength:
+      type: object
+      properties:
+        policy:
+          type: string
+          enum:
+            - any
+            - alpha_digit
+            - least_upper
+            - least_upper_and_special
+        length:
+          type: number
+    SingleSignOn:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    AccountLockout:
+      type: object
+      properties:
+        lockout_minutes:
+          type: number
+        enabled:
+          type: boolean
+        interval_minutes:
+          type: number
+        max_attempts:
+          type: number
