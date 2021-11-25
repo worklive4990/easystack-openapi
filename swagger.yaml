@@ -1151,6 +1151,194 @@ paths:
         '403':
           description: Forbidden
 
+  /v1/namespaces:
+    get:
+      tags:
+        - namespace
+      description: List namespaces.
+      responses:
+        '200':
+          description: A list of namespaces.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  namespaces:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/namespace'
+        '503':
+          $ref: '#/components/responses/503'
+
+  /v1/namespaces/{namespace}:
+    parameters:
+      - name: namespace
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of namespace, which must be unique globally.
+    put:
+      tags:
+        - namespace
+      description: Ensure that a namespace exists. If not, create it.
+      responses:
+        '201':
+          description: Namespace created.
+        '503':
+          $ref: '#/components/responses/503'
+
+  /v1/permissions:
+    get:
+      tags:
+        - permission
+      operationId: list_permission
+      parameters:
+        - $ref: '#/components/parameters/namespace_query'
+        - $ref: '#/components/parameters/paginate_page_size'
+        - $ref: '#/components/parameters/paginate_from'
+        - name: resource_type
+          in: query
+          schema:
+            type: string
+          description: Filter permissions by resource type
+        - name: verb
+          in: query
+          schema:
+            type: string
+          description: Filter permissions by verb
+      responses:
+        '200':
+          $ref: '#/components/responses/permission_list'
+        '503':
+          $ref: '#/components/responses/503'
+    put:
+      description: 'Batch put permissions to a namespace.
+        WARNING: Will clear the namespace before adding.'
+      tags:
+        - permission
+      requestBody:
+        $ref: '#/components/requestBodies/permissions_add'
+      responses:
+        '201':
+          description: Request was successful.
+        '404':
+          $ref: '#/components/responses/404'
+        '503':
+          $ref: '#/components/responses/503'
+    post:
+      description: 'Batch add permissions to a namespace.'
+      tags:
+        - permission
+      requestBody:
+        $ref: '#/components/requestBodies/permissions_add'
+      responses:
+        '201':
+          description: Request was successful.
+        '404':
+          $ref: '#/components/responses/404'
+        '503':
+          $ref: '#/components/responses/503'
+    # TODO: Batch delete?
+
+  /v1/permission_bindings:
+    get:
+      tags:
+        - permission_binding
+      description: List permission bindings.
+      parameters:
+        - $ref: '#/components/parameters/namespace_query'
+        - $ref: '#/components/parameters/paginate_from'
+        - $ref: '#/components/parameters/paginate_page_size'
+        - name: subject_id
+          in: query
+          schema:
+            type: string
+          description: Filter by subject. MUST use with subject_type.
+        - name: subject_type
+          in: query
+          schema:
+            type: string
+          description: Filter by subject. MUST use with subject_id.
+        - name: permission_id
+          in: query
+          schema:
+            type: string
+          description: Filter by permission ID.
+      responses:
+        '200':
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: PermissionBindingListResponse
+                properties:
+                  permission_bindings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/permission_binding'
+        '503':
+          $ref: '#/components/responses/503'
+    put:
+      tags:
+        - permission_binding
+      description: 'Batch bind permissions to subjects.
+        WARNING: Will clear the namespace before adding.'
+      requestBody:
+        $ref: '#/components/requestBodies/permission_bindings_add'
+      responses:
+        '201':
+          description: Request was successful.
+        '404':
+          $ref: '#/components/responses/404'
+        '503':
+          $ref: '#/components/responses/503'
+    post:
+      tags:
+        - permission_binding
+      description: 'Batch add binding between permissions and subjects.'
+      requestBody:
+        $ref: '#/components/requestBodies/permission_bindings_add'
+      responses:
+        '201':
+          description: Request was successful.
+        '404':
+          $ref: '#/components/responses/404'
+        '503':
+          $ref: '#/components/responses/503'
+    # TODO: Batch delete?
+
+  /v1/permission_bindings/{permission_binding_id}:
+    parameters:
+      - name: permission_binding_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The permission binding ID.
+    patch:
+      tags:
+        - permission_binding
+      description: Update a permission binding.
+      requestBody:
+        $ref: '#/components/schemas/permission_binding_request'
+      responses:
+        '204':
+          description: Request was successful.
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - permission_binding
+      description: Delete a permission binding.
+      responses:
+        '204':
+          description: Request was successful.
+        '404':
+          $ref: '#/components/responses/404'
+
 components:
   schemas:
     Domain:
@@ -1444,3 +1632,158 @@ components:
           type: number
         max_attempts:
           type: number
+    namespace:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the namespace, which MUST be unique globally.
+        description:
+          type: string
+          description: The description of the namespace.
+    subjects:
+      type: object
+      description: A group of `users` or `user groups` or `roles` etc.
+      properties:
+        type:
+          type: string
+        ids:
+          type: array
+          items:
+            type: string
+    permission:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the permission.
+        namespace:
+          type: string
+          description: The name of the namespace of the permission.
+        verb:
+          type: string
+          description: The operation to the resource.
+        resource_type:
+          type: string
+          description: The type of the resource.
+    permission_binding:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the permission binding.
+        permission_id:
+          type: string
+          description: The ID of the permission.
+        resource_ids:
+          type: array
+          items:
+            type: string
+        subjects:
+          $ref: '#/components/schemas/subjects'
+    permission_binding_request:
+      type: object
+      properties:
+        permission_id:
+          type: string
+          description: The ID of the permission.
+        resource_ids:
+          type: array
+          items:
+            type: string
+        subjects:
+          $ref: '#/components/schemas/subjects'
+    error_response:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        data:
+          nullable: true
+          description: Can be any value.
+  requestBodies:
+    permissions_add:
+      content:
+        application/json:
+          schema:
+            title: PermissionAddRequest
+            type: object
+            required:
+              - permissions
+            properties:
+              namespace:
+                type: string
+              permissions:
+                type: array
+                items:
+                  type: object
+                  title: PermissionAddPermission
+                  required:
+                    - verb
+                    - resource_type
+                  properties:
+                    verb:
+                      type: string
+                      description: The operation to the resource.
+                    resource_type:
+                      type: string
+                      description: The type of the resource.
+    permission_bindings_add:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              permission_bindings:
+                type: array
+                items:
+                  $ref: '#/components/schemas/permission_binding_request'
+  responses:
+    permission_list:
+      description: A list of permissions.
+      content:
+        application/json:
+          schema:
+            type: object
+            title: PermissionListResponse
+            properties:
+              permissions:
+                type: array
+                items:
+                  $ref: '#/components/schemas/permission'
+    '404':
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error_response'
+    '503':
+      description: Backend service may be unavailable.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error_response'
+  parameters:
+    namespace_query:
+      name: namespace
+      in: query
+      schema:
+        type: string
+      description: Filter response by namespace.
+    paginate_from:
+      name: from
+      in: query
+      schema:
+        type: integer
+        default: 0
+      description: Paginate from item index. Default is `0`.
+    paginate_page_size:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        default: -1
+      description: Paginate page size. `-1` means infinite, ehich will return all of the items. Default is `-1`.
+
