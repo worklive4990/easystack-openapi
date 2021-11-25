@@ -1154,7 +1154,7 @@ paths:
   /v1/namespaces:
     get:
       tags:
-        - namespace
+        - Namespaces
       description: List namespaces.
       responses:
         '200':
@@ -1181,7 +1181,7 @@ paths:
         description: The name of namespace, which must be unique globally.
     put:
       tags:
-        - namespace
+        - Namespaces
       description: Ensure that a namespace exists. If not, create it.
       responses:
         '201':
@@ -1192,7 +1192,7 @@ paths:
   /v1/permissions:
     get:
       tags:
-        - permission
+        - Permissions
       operationId: list_permission
       parameters:
         - $ref: '#/components/parameters/namespace_query'
@@ -1217,7 +1217,7 @@ paths:
       description: 'Batch put permissions to a namespace.
         WARNING: Will clear the namespace before adding.'
       tags:
-        - permission
+        - Permissions
       requestBody:
         $ref: '#/components/requestBodies/permissions_add'
       responses:
@@ -1230,7 +1230,7 @@ paths:
     post:
       description: 'Batch add permissions to a namespace.'
       tags:
-        - permission
+        - Permissions
       requestBody:
         $ref: '#/components/requestBodies/permissions_add'
       responses:
@@ -1245,7 +1245,7 @@ paths:
   /v1/permission_bindings:
     get:
       tags:
-        - permission_binding
+        - PermissionBindings
       description: List permission bindings.
       parameters:
         - $ref: '#/components/parameters/namespace_query'
@@ -1283,7 +1283,7 @@ paths:
           $ref: '#/components/responses/503'
     put:
       tags:
-        - permission_binding
+        - PermissionBindings
       description: 'Batch bind permissions to subjects.
         WARNING: Will clear the namespace before adding.'
       requestBody:
@@ -1297,7 +1297,7 @@ paths:
           $ref: '#/components/responses/503'
     post:
       tags:
-        - permission_binding
+        - PermissionBindings
       description: 'Batch add binding between permissions and subjects.'
       requestBody:
         $ref: '#/components/requestBodies/permission_bindings_add'
@@ -1320,7 +1320,7 @@ paths:
         description: The permission binding ID.
     patch:
       tags:
-        - permission_binding
+        - PermissionBindings
       description: Update a permission binding.
       requestBody:
         $ref: '#/components/schemas/permission_binding_request'
@@ -1331,7 +1331,7 @@ paths:
           $ref: '#/components/responses/404'
     delete:
       tags:
-        - permission_binding
+        - PermissionBindings
       description: Delete a permission binding.
       responses:
         '204':
@@ -1666,12 +1666,18 @@ components:
         resource_type:
           type: string
           description: The type of the resource.
+        description:
+          type: string
+          description: The description of the permission.
     permission_binding:
       type: object
       properties:
         id:
           type: string
           description: The ID of the permission binding.
+        namespace:
+          type: string
+          description: The namespace of the permission binding.
         permission_id:
           type: string
           description: The ID of the permission.
@@ -1730,6 +1736,9 @@ components:
                     resource_type:
                       type: string
                       description: The type of the resource.
+                    description:
+                      type: string
+                      description: The description of the permission.
     permission_bindings_add:
       content:
         application/json:
