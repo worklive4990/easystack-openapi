@@ -1690,6 +1690,8 @@ components:
     permission_binding_request:
       type: object
       properties:
+        namespace: 
+          type: string
         permission_id:
           type: string
           description: The ID of the permission.
