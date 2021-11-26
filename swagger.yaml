@@ -1323,7 +1323,10 @@ paths:
         - PermissionBindings
       description: Update a permission binding.
       requestBody:
-        $ref: '#/components/schemas/permission_binding_request'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/permission_binding_request'
       responses:
         '204':
           description: Request was successful.
@@ -1692,6 +1695,7 @@ components:
       properties:
         namespace: 
           type: string
+          description: The namespace of the permission binding.
         permission_id:
           type: string
           description: The ID of the permission.
