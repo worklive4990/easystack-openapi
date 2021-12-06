@@ -818,7 +818,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  project:
+                  projects:
+                    type: array
+                    items:
                       $ref: "#/components/schemas/Project"
         '400':
           description: Bad Request
