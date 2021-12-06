@@ -128,15 +128,8 @@ paths:
             schema:
               $ref: "#/components/schemas/DomainPatchReq"
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  domain:
-                      $ref: "#/components/schemas/Domain"
+        '204':
+          description: No Content
         '400':
           description: Bad Request
         '401':
